@@ -7,7 +7,7 @@
 		<title>Bien logger avec Monolog</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/sky.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -47,32 +47,95 @@
 				<section>
 					<h2>Monolog - Logging for PHP</h2>
 
-					présentation
+					<p>
+						Développé par Jordi Boggiano (Seldaek)
+					</p>
+
+					<p>
+						Compatible PSR-3
+					</p>
+
+					<p>
+						<a href="https://github.com/Seldaek/monolog">https://github.com/Seldaek/monolog</a>
+					</p>
 				</section>
 
 				<section>
-					installation
+					<h2>PSR-3</h2>
+
+					<p>
+						Interface commune pour logger en PHP
+					</p>
+					<p>
+						<a href="https://www.php-fig.org/psr/psr-3/">https://www.php-fig.org/psr/psr-3/</a>
+					</p>
+
+					<aside class="notes">
+						<ul>
+							<li>RFC 5424</li>
+							<li>Fourni une interface Psr\Log\LoggerInterface</li>
+						</ul>
+					</aside>
 				</section>
 
 				<section>
-					exemple de log
+					<h2>PSR-3 - Niveaux</h2>
+
+					<ul>
+						<li>DEBUG (100)</li>
+						<li>INFO (200)</li>
+						<li>NOTICE (250)</li>
+						<li>WARNING (300)</li>
+						<li>ERROR (400)</li>
+						<li>CRITICAL (500)</li>
+						<li>ALERT (550)</li>
+						<li>EMERGENCY (600)</li>
+					</ul>
 				</section>
 
 				<section>
-					niveau / psr3
+					<h2>Installation</h2>
+
+					<pre>
+						<code data-trim>
+							$ composer require monolog/monolog
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<h2>Exemple simple</h2>
+
+					<pre class="">
+						<code class="hljs stylus" data-trim>
+							use Monolog\Logger;
+
+							$appLogger = new Logger('app');
+
+							$appLogger->warning('Le speaker est en retard');
+							$appLogger->notice('Super Apéro PHP en cours');
+						</code>
+					</pre>
+
+					<pre class="fragment">
+						<code data-trim>
+							[2018-03-08 18:59:59] app.WARNING: Le speaker est en retard [] []
+							[2018-03-08 19:00:00] app.NOTICE: Super Apéro PHP en cours [] []
+						</code>
+					</pre>
 				</section>
 
 				<section>
 					<h2>Représentation d'un log</h2>
 
 					<pre>
-						<code class="hljs" data-trim>
+						<code data-trim>
 							$record = [
 							  'message' => 'Super Apéro PHP en cours',
 							  'context' => [],
 							  'level' => 250,
 							  'level_name' => 'NOTICE',
-							  'channel' => 'my_app',
+							  'channel' => 'app',
 							  'datetime' => new \DateTimeImmutable('2018-03-08 19:00:00'),
 							  'extra' => [],
 							];
@@ -90,22 +153,40 @@
 				</section>
 
 				<section>
-					handlers
+					<h2>Handlers</h2>
+
+					<ul>
+						<li>Fichiers/syslog (<em>RotatingFileHandler, SyslogHandler</em>)</li>
+						<li>Alerte (<em>NativeMailerHandler, SlackHandler, PushoverHandler, etc</em>)</li>
+						<li>Service dédié (<em>GelfHandler, NewRelicHandler, RavenHandler, etc</em>)</li>
+						<li>Développement (<em>BrowserConsoleHandler, ChromePHPHandler, etc</em>)</li>
+						<li>Base de données (<em>RedisHandler, ElasticSearchHandler, MongoDBHandler, etc</em>)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Wrappers - Les handlers spéciaux</h2>
+
+					<ul>
+						<li>FingersCrossedHandler</li>
+						<li>DeduplicationHandler</li>
+						<li>BufferHandler</li>
+						<li>FilterHandler</li>
+					</ul>
 				</section>
 
 				<section>
 					<h2>Channel</h2>
 
-
 					<pre>
-						<code class="hljs" data-trim>
+						<code data-trim>
 							$securityLogger = new Logger('security');
 							$domainLogger = new Logger('domain');
 						</code>
 					</pre>
 
 					<pre>
-						<code class="hljs" data-trim>
+						<code data-trim>
 							[2018-03-08 10:26:00] security.INFO: authentification with success [] []
 							[2018-03-08 13:37:00] domain.WARNING: Document deleted [] []
 						</code>
@@ -120,18 +201,111 @@
 				</section>
 
 				<section>
-					context
+					<h2>Context</h2>
+
+					<pre>
+						<code data-trim>
+							$logger->error('my message', [
+								'foo' => 'bar'
+							]);
+						</code>
+					</pre>
+
+					<pre class="fragment">
+						<code data-trim>
+							[2018-03-04 20:23:10] app.ERROR: my message {"foo":"bar"} []
+						</code>
+					</pre>
 				</section>
 
 				<section>
-					formatter
+					<h2>Context</h2>
+
+					<pre>
+						<code data-trim>
+							$document = new Document();
+							// save to the database
+
+							$logger->notice(sprintf('Document %d created', $document->getId()));
+						</code>
+					</pre>
+
+					<pre class="fragment">
+						<code data-trim>
+							[2018-03-04 20:23:10] app.NOTICE: Document 1 created {} []
+						</code>
+					</pre>
 				</section>
 
 				<section>
-					processor
+					<h2>Context</h2>
+
+					<pre>
+						<code data-trim>
+							$document = new Document();
+							// save to the database
+
+							$logger->notice(sprintf('Document created', [
+							  'document_id' => $document->getId(),
+							]);
+						</code>
+					</pre>
+
+					<pre class="fragment">
+						<code data-trim>
+							[2018-03-04 20:23:10] app.NOTICE: Document created {"document_id":1} []
+						</code>
+					</pre>
 				</section>
 
 				<section>
+					<h2>Formatter</h2>
+				</section>
+
+				<section>
+					<h2>Processor</h2>
+
+					<ul>
+						<li><em>WebProcessor</em></li>
+						<li><em>MemoryUsageProcessor</em></li>
+						<li><em>GitProcessor</em></li>
+						<li>etc</li>
+					</ul>
+
+					<aside class="notes">
+						<ul>
+							<li>10 intégré de base</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Processor</h2>
+
+					<pre>
+						<code data-trim>
+class UserProcessor
+{
+    private $userProvider;
+
+    public function __construct(UserProvider $userProvider)
+    {
+        $this->userProvider = $userProvider;
+    }
+
+    public function processRecord(array $record) : array
+    {
+        $record['extra']['user'] = $this->userProvider->getUser();
+        return $record;
+    }
+}
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<h2>Paquets communautaires</h2>
+
 					divers (monolog, notre bundle ?)
 				</section>
 
