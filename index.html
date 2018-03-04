@@ -24,7 +24,120 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section data-markdown="slides/1-introduction.md"></section>
+				<section>
+					<h1>Bien logger avec Monolog</h1>
+
+
+					<h4>Super Apéro PHP 2018 - Afup Reims</h4>
+				</section>
+
+				<section>
+					<h2>Présentation</h2>
+
+					<img alt="Floran Brutel" src="images/me.jpeg" />
+
+					<p>Floran Brutel / @notFloran</p>
+
+					<ul>
+						<li>Responsable adjoint du service SI chez Hexanet</li>
+						<li>Développeur / Ops</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Monolog - Logging for PHP</h2>
+
+					présentation
+				</section>
+
+				<section>
+					installation
+				</section>
+
+				<section>
+					exemple de log
+				</section>
+
+				<section>
+					niveau / psr3
+				</section>
+
+				<section>
+					<h2>Représentation d'un log</h2>
+
+					<pre>
+						<code class="hljs" data-trim>
+							$record = [
+							  'message' => 'Super Apéro PHP en cours',
+							  'context' => [],
+							  'level' => 250,
+							  'level_name' => 'NOTICE',
+							  'channel' => 'my_app',
+							  'datetime' => new \DateTimeImmutable('2018-03-08 19:00:00'),
+							  'extra' => [],
+							];
+						</code>
+					</pre>
+
+					<aside class="notes">
+						représentation interne d'un log
+
+						<ul>
+							<li>extra -> données accessible uniquement depuis les processors</li>
+							<li>context -> données fournis au niveau du code pour enrichir le log</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					handlers
+				</section>
+
+				<section>
+					<h2>Channel</h2>
+
+
+					<pre>
+						<code class="hljs" data-trim>
+							$securityLogger = new Logger('security');
+							$domainLogger = new Logger('domain');
+						</code>
+					</pre>
+
+					<pre>
+						<code class="hljs" data-trim>
+							[2018-03-08 10:26:00] security.INFO: authentification with success [] []
+							[2018-03-08 13:37:00] domain.WARNING: Document deleted [] []
+						</code>
+					</pre>
+
+					<aside class="notes">
+						<ul>
+							<li>catégoriser les logs</li>
+							<li>ex: filtres -> grep dans un même fichier, filtre dans graylog/elastic</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					context
+				</section>
+
+				<section>
+					formatter
+				</section>
+
+				<section>
+					processor
+				</section>
+
+				<section>
+					divers (monolog, notre bundle ?)
+				</section>
+
+				<section>
+					<h1>Questions ?</h1>
+				</section>
 			</div>
 		</div>
 
@@ -36,6 +149,7 @@
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
+                transition: 'none',
 				dependencies: [
 					{ src: 'plugin/markdown/marked.js' },
 					{ src: 'plugin/markdown/markdown.js' },
