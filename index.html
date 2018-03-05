@@ -7,7 +7,7 @@
 		<title>Bien logger avec Monolog</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/sky.css">
+		<link rel="stylesheet" href="css/theme/black.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -223,16 +223,16 @@
 
 					<pre>
 						<code data-trim>
-							$document = new Document();
-							// save to the database
+$document = new Document();
+// save to the database
 
-							$logger->notice(sprintf('Document %d created', $document->getId()));
+$logger->notice(sprintf('Document %d created', $document->getId()));
 						</code>
 					</pre>
 
 					<pre class="fragment">
 						<code data-trim>
-							[2018-03-04 20:23:10] app.NOTICE: Document 1 created {} []
+[2018-03-04 20:23:10] app.NOTICE: Document 1 created {} []
 						</code>
 					</pre>
 				</section>
@@ -242,12 +242,12 @@
 
 					<pre>
 						<code data-trim>
-							$document = new Document();
-							// save to the database
+$document = new Document();
+// save to the database
 
-							$logger->notice(sprintf('Document created', [
-							  'document_id' => $document->getId(),
-							]);
+$logger->notice(sprintf('Document created', [
+  'document_id' => $document->getId(),
+]);
 						</code>
 					</pre>
 
