@@ -96,51 +96,41 @@
 				<section>
 					<h2>Installation</h2>
 
-					<pre>
-						<code data-trim>
-							$ composer require monolog/monolog
-						</code>
-					</pre>
+					<pre><code data-trim>$ composer require monolog/monolog</code></pre>
 				</section>
 
 				<section>
 					<h2>Exemple simple</h2>
 
-					<pre class="">
-						<code class="hljs stylus" data-trim>
-							use Monolog\Logger;
+					<pre class=""><code class="hljs stylus" data-trim>
+use Monolog\Logger;
 
-							$appLogger = new Logger('app');
+$appLogger = new Logger('app');
 
-							$appLogger->warning('Le speaker est en retard');
-							$appLogger->notice('Super Apéro PHP en cours');
-						</code>
-					</pre>
+$appLogger->warning('Le speaker est en retard');
+$appLogger->notice('Super Apéro PHP en cours');
+					</code></pre>
 
-					<pre class="fragment">
-						<code data-trim>
-							[2018-03-08 18:59:59] app.WARNING: Le speaker est en retard [] []
-							[2018-03-08 19:00:00] app.NOTICE: Super Apéro PHP en cours [] []
-						</code>
-					</pre>
+					<pre class="fragment"><code data-trim>
+[2018-03-08 18:59:59] app.WARNING: Le speaker est en retard [] []
+[2018-03-08 19:00:00] app.NOTICE: Super Apéro PHP en cours [] []
+					</code></pre>
 				</section>
 
 				<section>
 					<h2>Représentation d'un log</h2>
 
-					<pre>
-						<code data-trim>
-							$record = [
-							  'message' => 'Super Apéro PHP en cours',
-							  'context' => [],
-							  'level' => 250,
-							  'level_name' => 'NOTICE',
-							  'channel' => 'app',
-							  'datetime' => new \DateTimeImmutable('2018-03-08 19:00:00'),
-							  'extra' => [],
-							];
-						</code>
-					</pre>
+					<pre><code data-trim>
+$record = [
+  'message' => 'Super Apéro PHP en cours',
+  'context' => [],
+  'level' => 250,
+  'level_name' => 'NOTICE',
+  'channel' => 'app',
+  'datetime' => new \DateTimeImmutable('2018-03-08 19:00:00'),
+  'extra' => [],
+];
+					</code></pre>
 
 					<aside class="notes">
 						représentation interne d'un log
@@ -178,19 +168,15 @@
 				<section>
 					<h2>Channel</h2>
 
-					<pre>
-						<code data-trim>
-							$securityLogger = new Logger('security');
-							$domainLogger = new Logger('domain');
-						</code>
-					</pre>
+					<pre><code data-trim>
+$securityLogger = new Logger('security');
+$domainLogger = new Logger('domain');
+					</code></pre>
 
-					<pre>
-						<code data-trim>
-							[2018-03-08 10:26:00] security.INFO: authentification with success [] []
-							[2018-03-08 13:37:00] domain.WARNING: Document deleted [] []
-						</code>
-					</pre>
+					<pre><code data-trim>
+[2018-03-08 10:26:00] security.INFO: authentification with success [] []
+[2018-03-08 13:37:00] domain.WARNING: Document deleted [] []
+					</code></pre>
 
 					<aside class="notes">
 						<ul>
@@ -203,59 +189,43 @@
 				<section>
 					<h2>Context</h2>
 
-					<pre>
-						<code data-trim>
-							$logger->error('my message', [
-								'foo' => 'bar'
-							]);
-						</code>
-					</pre>
+					<pre><code data-trim>
+$logger->error('my message', [
+	'foo' => 'bar'
+]);
+					</code></pre>
 
-					<pre class="fragment">
-						<code data-trim>
-							[2018-03-04 20:23:10] app.ERROR: my message {"foo":"bar"} []
-						</code>
-					</pre>
+					<pre class="fragment"><code data-trim>[2018-03-04 20:23:10] app.ERROR: my message {"foo":"bar"} []</code></pre>
 				</section>
 
 				<section>
 					<h2>Context</h2>
 
-					<pre>
-						<code data-trim>
+					<pre><code data-trim>
 $document = new Document();
 // save to the database
 
 $logger->notice(sprintf('Document %d created', $document->getId()));
-						</code>
-					</pre>
+					</code></pre>
 
-					<pre class="fragment">
-						<code data-trim>
+					<pre class="fragment"><code data-trim>
 [2018-03-04 20:23:10] app.NOTICE: Document 1 created {} []
-						</code>
-					</pre>
+					</code></pre>
 				</section>
 
 				<section>
 					<h2>Context</h2>
 
-					<pre>
-						<code data-trim>
+					<pre><code data-trim>
 $document = new Document();
 // save to the database
 
 $logger->notice(sprintf('Document created', [
   'document_id' => $document->getId(),
 ]);
-						</code>
-					</pre>
+					</code></pre>
 
-					<pre class="fragment">
-						<code data-trim>
-							[2018-03-04 20:23:10] app.NOTICE: Document created {"document_id":1} []
-						</code>
-					</pre>
+					<pre class="fragment"><code data-trim>[2018-03-04 20:23:10] app.NOTICE: Document created {"document_id":1} []</code></pre>
 				</section>
 
 				<section>
@@ -282,8 +252,7 @@ $logger->notice(sprintf('Document created', [
 				<section>
 					<h2>Processor</h2>
 
-					<pre>
-						<code data-trim>
+					<pre><code data-trim>
 class UserProcessor
 {
     private $userProvider;
@@ -299,8 +268,7 @@ class UserProcessor
         return $record;
     }
 }
-						</code>
-					</pre>
+					</code></pre>
 				</section>
 
 				<section>
