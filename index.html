@@ -61,6 +61,7 @@
 
 					<aside class="notes">
 						<ul>
+							<li>depuis 2011, >= 5.3</li>
 							<li>Utilisé indirectement par un très grand nombre de personne par sa forte intégration dans la plupart des frameworks</li>
 						</ul>
 					</aside>
@@ -78,6 +79,7 @@
 
 					<aside class="notes">
 						<ul>
+							<li>4 eme PSR</li>
 							<li>Fourni une interface Psr\Log\LoggerInterface</li>
 						</ul>
 					</aside>
@@ -86,16 +88,40 @@
 				<section>
 					<h2>PSR-3 - Niveaux</h2>
 
-					<ul>
-						<li>DEBUG (100)</li>
-						<li>INFO (200)</li>
-						<li>NOTICE (250)</li>
-						<li>WARNING (300)</li>
-						<li>ERROR (400)</li>
-						<li>CRITICAL (500)</li>
-						<li>ALERT (550)</li>
-						<li>EMERGENCY (600)</li>
-					</ul>
+					<table style="font-size:30px;">
+						<tr>
+							<td>EMERGENCY</td>
+							<td>Système inutilisable</td>
+						</tr>
+						<tr>
+							<td>ALERT</td>
+							<td>Une intervention immédiate est nécessaire</td>
+						</tr>
+						<tr>
+							<td>CRITICAL</td>
+							<td>Erreur critique pour le système</td>
+						</tr>
+						<tr>
+							<td>ERROR</td>
+							<td>Erreur de fonctionnement</td>
+						</tr>
+						<tr>
+							<td>WARNING</td>
+							<td>Avertissement (une erreur peut intervenir si aucune action n'est prise)</td>
+						</tr>
+						<tr>
+							<td>NOTICE</td>
+							<td>Événement normal méritant d'être signalé</td>
+						</tr>
+						<tr>
+							<td>INFO</td>
+							<td>Pour information</td>
+						</tr>
+						<tr>
+							<td>DEBUG</td>
+							<td>Message de mise au point</td>
+						</tr>
+					</table>
 
 					<aside class="notes">
 						<ul>
@@ -177,15 +203,36 @@ $record = [
 					<h2>Wrappers - Les handlers spéciaux</h2>
 
 					<ul>
-						<li>FingersCrossedHandler</li>
-						<li>DeduplicationHandler</li>
-						<li>BufferHandler</li>
-						<li>FilterHandler</li>
+						<li><em>FingersCrossedHandler</em></li>
+						<li><em>DeduplicationHandler</em></li>
+						<li><em>BufferHandler</em></li>
+						<li><em>FilterHandler</em></li>
+						<li>etc</li>
 					</ul>
 				</section>
 
 				<section>
-					<h2>Channel</h2>
+					<h2>Handlers</h2>
+
+					<pre><code data-trim>
+$rotatingFileHandler = new RotatingFileHandler('app.log', 5);
+$fingersCrossed = new FingersCrossedHandler($rotatingFileHandler, Logger::CRITICAL);
+
+$elasticsearchHandler = new ElasticSearchHandler($elasticsearchClient);
+
+$logger = new Logger("app");
+$logger->pushHandler($fingersCrossed);
+$logger->pushHandler($elasticsearchHandler);
+
+$logger->info('Début de la présentation');
+$logger->notice('Attention ça va un peu trop vite');
+
+$logger->critical('On est en retard !!!!');
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Channels</h2>
 
 					<pre><code data-trim>
 $securityLogger = new Logger('security');
@@ -255,7 +302,7 @@ $logger->notice('Document created', [
 				</section>
 
 				<section>
-					<h2>Formatter</h2>
+					<h2>Formatters</h2>
 
 					<ul>
 						<li><em>LineFormatter</em></li>
@@ -272,7 +319,7 @@ $logger->notice('Document created', [
 				</section>
 
 				<section>
-					<h2>Formatter</h2>
+					<h2>Formatters</h2>
 
 					<p>Exemple d'un log au format HTML</p>
 
@@ -293,7 +340,7 @@ $logger->info("L'AFUP c'est cool !");
 				</section>
 
 				<section>
-					<h2>Processor</h2>
+					<h2>Processors</h2>
 
 					<ul>
 						<li><em>WebProcessor</em></li>
@@ -310,7 +357,9 @@ $logger->info("L'AFUP c'est cool !");
 				</section>
 
 				<section>
-					<h2>Processor</h2>
+					<h2>Processors</h2>
+
+					<p>Ajouter l'utilisateur actuellement connecté dans tous les logs</p>
 
 					<pre><code data-trim>
 class UserProcessor
@@ -333,9 +382,9 @@ class UserProcessor
 				</section>
 
 				<section>
-					<h2>TODO - Paquets communautaires</h2>
+					<h2>Exemple chez Hexanet</h2>
 
-					divers (monolog, notre bundle ?)
+					<p><a href="https://github.com/Hexanet/MonologExtraBundle">Hexanet/MonologExtraBundle</a></p>
 				</section>
 
 				<section>
