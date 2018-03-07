@@ -204,14 +204,14 @@ $record = [
 				<section>
 					<h2>Handlers</h2>
 
-					<pre><code data-trim>
+					<pre ><code data-trim>
 $logger = new Logger("app");
 
 $streamHandler = new StreamHandler('app.log', Logger::CRITICAL);
 $logger->pushHandler($streamHandler);
 
-$elasticsearchHandler = new ElasticSearchHandler($elasticsearchClient);
-$logger->pushHandler($elasticsearchHandler);
+$elasticHandler = new ElasticSearchHandler($elasticsearchClient);
+$logger->pushHandler($elasticHandler);
 
 $logger->info('Début de la présentation');
 $logger->notice('Attention ça va un peu trop vite');
@@ -231,7 +231,7 @@ $securityLogger->info('Authentication with success');
 $domainLogger->warning('Document deleted');
 					</code></pre>
 
-					<pre><code data-trim>
+					<pre style="font-size:20px;"><code data-trim>
 [2018-03-08 10:26:00] security.INFO: Authentication with success [] []
 [2018-03-08 13:37:00] domain.WARNING: Document deleted [] []
 					</code></pre>
