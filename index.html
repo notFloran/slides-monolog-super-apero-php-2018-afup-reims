@@ -45,15 +45,20 @@
 				</section>
 
 				<section>
-					<h2>Monolog - Logging for PHP</h2>
+					<h2>Monolog</h2>
+					<h3>Logging for PHP</h3>
+
+					<br />
 
 					<p>
-						Développé par Jordi Boggiano (Seldaek)
+						Développé par Jordi Boggiano (Seldaek) depuis 2011
 					</p>
 
 					<p>
-						Compatible PSR-3
+						Compatible <a href="https://www.php-fig.org/psr/psr-3/">PSR-3</a>
 					</p>
+
+					<br />
 
 					<p>
 						<a href="https://github.com/Seldaek/monolog">https://github.com/Seldaek/monolog</a>
@@ -61,24 +66,9 @@
 
 					<aside class="notes">
 						<ul>
-							<li>depuis 2011, >= 5.3</li>
-							<li>Utilisé indirectement par un très grand nombre de personne par sa forte intégration dans la plupart des frameworks</li>
-						</ul>
-					</aside>
-				</section>
-
-				<section>
-					<h2>PSR-3</h2>
-
-					<p>
-						Interface commune pour logger en PHP
-					</p>
-					<p>
-						<a href="https://www.php-fig.org/psr/psr-3/">https://www.php-fig.org/psr/psr-3/</a>
-					</p>
-
-					<aside class="notes">
-						<ul>
+							<li>>= 5.3</li>
+							<li>grosse utilisation, forte intégration dans la plupart des frameworks</li>
+							<li>log -> reporting, alerting, etc</li>
 							<li>4 eme PSR</li>
 							<li>Fourni une interface Psr\Log\LoggerInterface</li>
 						</ul>
@@ -215,13 +205,12 @@ $record = [
 					<h2>Handlers</h2>
 
 					<pre><code data-trim>
-$rotatingFileHandler = new RotatingFileHandler('app.log', 5);
-$fingersCrossed = new FingersCrossedHandler($rotatingFileHandler, Logger::CRITICAL);
+$logger = new Logger("app");
+
+$streamHandler = new StreamHandler('app.log', Logger::CRITICAL);
+$logger->pushHandler($streamHandler);
 
 $elasticsearchHandler = new ElasticSearchHandler($elasticsearchClient);
-
-$logger = new Logger("app");
-$logger->pushHandler($fingersCrossed);
 $logger->pushHandler($elasticsearchHandler);
 
 $logger->info('Début de la présentation');
@@ -265,40 +254,32 @@ $logger->error('my message', [
 ]);
 					</code></pre>
 
-					<pre class="fragment"><code data-trim>[2018-03-04 20:23:10] app.ERROR: my message {"foo":"bar"} []</code></pre>
+					<pre><code data-trim>[2018-03-04 20:23:10] app.ERROR: my message {"foo":"bar"} []</code></pre>
 				</section>
 
 				<section>
 					<h2>Context</h2>
 
-					<pre><code data-trim>
+					<pre class="fragment"><code data-trim>
 $document = new Document();
 // save to the database
 
 $logger->notice(sprintf(
-	'Document %d created',
-	$document->getId()
+  'Document %d created',
+  $document->getId()
 ));
-					</code></pre>
-
-					<pre class="fragment"><code data-trim>
-[2018-03-04 20:23:10] app.NOTICE: Document 1 created {} []
-					</code></pre>
-				</section>
-
-				<section>
-					<h2>Context</h2>
-
-					<pre><code data-trim>
-$document = new Document();
-// save to the database
 
 $logger->notice('Document created', [
   'document_id' => $document->getId(),
 ]);
 					</code></pre>
 
-					<pre class="fragment"><code data-trim>[2018-03-04 20:23:10] app.NOTICE: Document created {"document_id":1} []</code></pre>
+					<pre class="fragment" style="font-size:20px;"><code data-trim>
+						[2018-03-04 20:23:10] app.NOTICE: Document 1 created [] []
+						[2018-03-04 20:23:10] app.NOTICE: Document created {"document_id":1} []
+						[2018-03-04 20:23:10] app.NOTICE: Document 2 created [] []
+						[2018-03-04 20:23:10] app.NOTICE: Document created {"document_id":2} []
+					</code></pre>
 				</section>
 
 				<section>
@@ -326,8 +307,9 @@ $logger->notice('Document created', [
 					<pre><code data-trim>
 $logger = new Logger('app');
 
-$formatter = new HtmlFormatter();
 $handler = new StreamHandler('log.html');
+
+$formatter = new HtmlFormatter();
 $handler->setFormatter($formatter);
 
 $logger->pushHandler($handler);
@@ -342,12 +324,21 @@ $logger->info("L'AFUP c'est cool !");
 				<section>
 					<h2>Processors</h2>
 
-					<ul>
-						<li><em>WebProcessor</em></li>
-						<li><em>MemoryUsageProcessor</em></li>
-						<li><em>GitProcessor</em></li>
-						<li>etc</li>
-					</ul>
+					<pre><code data-trim>
+$logger = new Logger('afup');
+
+
+$logger->pushProcessor(function (array $record) {
+    $record['extra']['user'] = get_current_logged_user();
+
+    return $record;
+});
+					</code></pre>
+
+					<pre class="fragment" style="font-size:20px;"><code data-trim>
+[2018-03-08 18:59:59] app.INFO: Début du quizz [] {"user": "floran"}
+[2018-03-08 19:00:00] app.INFO: Question répondue [] {"user": "boris"}
+					</code></pre>
 
 					<aside class="notes">
 						<ul>
@@ -357,34 +348,9 @@ $logger->info("L'AFUP c'est cool !");
 				</section>
 
 				<section>
-					<h2>Processors</h2>
+					<h3>Hexanet/MonologExtraBundle</h3>
 
-					<p>Ajouter l'utilisateur actuellement connecté dans tous les logs</p>
-
-					<pre><code data-trim>
-class UserProcessor
-{
-    private $userProvider;
-
-    public function __construct(UserProvider $userProvider)
-    {
-        $this->userProvider = $userProvider;
-    }
-
-    public function processRecord(array $record) : array
-    {
-        $record['extra']['user'] = $this->userProvider->getUser();
-
-        return $record;
-    }
-}
-					</code></pre>
-				</section>
-
-				<section>
-					<h2>Exemple chez Hexanet</h2>
-
-					<p><a href="https://github.com/Hexanet/MonologExtraBundle">Hexanet/MonologExtraBundle</a></p>
+					<p><a href="https://github.com/Hexanet/MonologExtraBundle"><img src="images/monolog_extra_bundle.png" /></a></p>
 				</section>
 
 				<section>
